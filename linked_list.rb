@@ -3,7 +3,11 @@
 require './linked_list_node.rb'
 
 class LinkedList
-  attr_accessor :next, :first, :size
+  attr_accessor :first, :size, :value
+
+  def initialize
+    @size = 0
+  end
 
   def add(val)
     if first.nil?
@@ -13,11 +17,23 @@ class LinkedList
       current = first
       while !current.next.nil?
         current = current.next
-        @size += 1
       end
 
       node = LinkedListNode.new(val)
+      @size += 1
       current.next = node
+    end
+  end
+
+  def add_first(val)
+    if first.nil?
+      @first = LinkedListNode.new(val)
+      @size = 1
+    else
+      tmp = @first
+      @first = LinkedListNode.new(val)
+      @first.next = tmp
+      @size += 1
     end
   end
 
@@ -26,6 +42,7 @@ class LinkedList
 
     if (first.val == val)
       first = first.next
+      @size -= 1
       return true
     end
 
@@ -33,6 +50,7 @@ class LinkedList
     while !current.nil?
       return false if current.next.nil?
 
+      @size -= 1
       if (current.next.val == val)
         current.next = current.next.next
         return true
@@ -44,16 +62,50 @@ class LinkedList
     false
   end
 
-  def to_a
-    return [] if first.nil?
-    result = []
-    current = first
+  def delete_first
+    return nil if first.nil?
 
-    while !current.nil?
-      result << current
+    @size -= 1
+    tmp = first
+    @first = first.next
+
+    tmp
+  end
+
+  def delete_last
+    return nil if first.nil?
+
+    if first.next.nil?
+      tmp = @first
+      @first = nil
+      return tmp
+    end
+
+    current = first
+    while !current.next.nil?
+      before = current
       current = current.next
     end
 
+    result = current
+    before.next = nil
+
+    @size -= 1
+
     result
+  end
+
+  def add_all(linked_list)
+    if first.nil?
+      @first = node
+      return
+    end
+
+   current = @first
+    while !current.next.nil?
+      current = current.next
+    end
+    current.next = linked_list.first
+    @size += linked_list.size
   end
 end
